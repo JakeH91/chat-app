@@ -1,8 +1,10 @@
+// To start: /Users/jakehill/mongodb/bin/mongod --dbpath=/Users/jakehill/mongodb-data
+// To kill existing: sudo killall mongod
+
 const path = require('path');
 const http = require('http');
 const express = require('express');
 const socketio = require('socket.io');
-const Filter = require('bad-words');
 const { generateMessage, generateLocationMessage } = require('./utils/messages');
 const { addUser, removeUser, getUser, getUsersInRoom } = require('./utils/users');
 
@@ -43,12 +45,6 @@ io.on('connection', socket => {
 
     if (!user) {
       return callback("User doesn't exists");
-    }
-
-    const filter = new Filter();
-
-    if(filter.isProfane(message)) {
-      return callback('Profanity is not allowed');
     }
     
     io.to(user.room).emit('message', generateMessage(user.username, message));
